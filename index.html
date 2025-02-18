@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,48 +9,117 @@
         body {
             font-family: sans-serif;
             margin: 0;
-            background-color: #fff; /* Branco */
-            color: #191970; /* Azul marinho */
+            background-color: #fff;
+            /* Branco */
+            color: #191970;
+            /* Azul marinho */
         }
+
         header {
-            background-color: #191970; /* Azul marinho */
-            color: #fff; /* Branco */
+            background-color: #191970;
+            /* Azul marinho */
+            color: #fff;
+            /* Branco */
             padding: 20px;
             text-align: center;
         }
+
         .logo {
-            max-width: 300px; /* Largura máxima do logotipo */
-            margin: 0 auto; /* Centralizar o logotipo */
+            max-width: 300px;
+            /* Largura máxima do logotipo */
+            margin: 0 auto;
+            /* Centralizar o logotipo */
         }
+
         nav {
-            background-color: #ffa500; /* Laranja */
+            background-color: #ffa500;
+            /* Laranja */
             padding: 10px;
         }
+
         nav ul {
             list-style: none;
             margin: 0;
             padding: 0;
             text-align: center;
         }
+
         nav li {
             display: inline;
             margin: 0 10px;
         }
+
         nav a {
-            color: #fff; /* Branco */
+            color: #fff;
+            /* Branco */
             text-decoration: none;
         }
+
         main {
             padding: 20px;
         }
+
         footer {
-            background-color: #191970; /* Azul marinho */
-            color: #fff; /* Branco */
+            background-color: #191970;
+            /* Azul marinho */
+            color: #fff;
+            /* Branco */
             padding: 10px;
             text-align: center;
         }
+
+        /* Estilos para o modal */
+        .modal {
+            display: none;
+            /* Oculto por padrão */
+            position: fixed;
+            /* Fixo na tela */
+            z-index: 1;
+            /* Sobreposto a outros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Largura total */
+            height: 100%;
+            /* Altura total */
+            overflow: auto;
+            /* Rolagem se necessário */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Fundo escuro */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* Centralizado verticalmente */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Largura */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Estilos para o botão Calcular */
+        #calcular {
+            display: none;
+            /* Oculto por padrão */
+        }
     </style>
 </head>
+
 <body>
     <header>
         <img class="logo" src="Logo La Buena Ruta BR (1).png" alt="Logotipo La Buena Ruta">
@@ -62,9 +132,86 @@
     <main>
         <h2>Bem-vindo à La Buena Ruta!</h2>
         <p>A aventura te espera.</p>
+
+        <button id="calculoCamping">Cálculo Camping</button>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Cálculo de Camping</h2>
+                <label for="diarias">Diárias:</label>
+                <input type="number" id="diarias" name="diarias"><br><br>
+                <label for="pessoas">Pessoas:</label>
+                <input type="number" id="pessoas" name="pessoas" value="2"><br><br>
+                <label for="valorDiaria">Valor Diária:</label>
+                <input type="number" id="valorDiaria" name="valorDiaria"><br><br>
+                <button id="calcular">Calcular</button><br><br>
+                <label for="resultado">Resultado:</label>
+                <span id="resultado"></span>
+            </div>
+        </div>
     </main>
     <footer>
-        <p>&copy; 2023 La Buena Ruta</p>
+        <p>&copy; <span id="anoAtual"></span> La Buena Ruta</p>
     </footer>
+
+    <script>
+        // Obtém os elementos
+        var modal = document.getElementById("myModal");
+        var btn = document.getElementById("calculoCamping");
+        var span = document.getElementsByClassName("close")[0];
+        var calcularBtn = document.getElementById("calcular");
+        var diariasInput = document.getElementById("diarias");
+        var pessoasInput = document.getElementById("pessoas");
+        var valorDiariaInput = document.getElementById("valorDiaria");
+        var resultadoLabel = document.getElementById("resultado");
+
+        // Abre o modal ao clicar no botão
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // Fecha o modal ao clicar no botão de fechar
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // Fecha o modal ao clicar fora do conteúdo
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Verifica se todos os campos estão preenchidos
+        function verificarCampos() {
+            if (diariasInput.value != "" && valorDiariaInput.value != "") {
+                calcularBtn.style.display = "block";
+            } else {
+                calcularBtn.style.display = "none";
+            }
+        }
+
+        // Eventos para verificar os campos
+        diariasInput.oninput = verificarCampos;
+        valorDiariaInput.oninput = verificarCampos;
+
+        // Calcula o resultado
+        calcularBtn.onclick = function () {
+            var diarias = parseInt(diariasInput.value);
+            var pessoas = parseInt(pessoasInput.value);
+            var valorDiaria = parseInt(valorDiariaInput.value);
+            var resultado = (diarias * valorDiaria) * pessoas;
+            
+            resultadoLabel.innerHTML = resultado.toLocaleString("pt-BR", 
+            { style: "currency" , currency:"BRL"});
+        }
+
+        var anoAtual = new Date().getFullYear();
+
+        // Insere o ano atual no footer
+        document.getElementById("anoAtual").innerHTML = anoAtual;
+    </script>
 </body>
+
 </html>
